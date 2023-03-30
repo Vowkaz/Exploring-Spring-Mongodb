@@ -20,8 +20,12 @@ public class UserService {
 
     public Optional<User> findById(String id)
     {
-        return userRepository.findById(id);
-
+        Optional<User> e = userRepository.findById  (id);
+        if (e.isEmpty())
+        {
+            throw new RuntimeException("Usuario não encontrado");
+        }
+        return e;
     }
 
     public User insert(User e )
@@ -29,8 +33,16 @@ public class UserService {
         return userRepository.insert(e);
     }
 
+    public void delete(String id)
+    {
+        findById(id);
+        userRepository.deleteById(id);
+    }
+
     public User fromDTO(UserDTO e)
     {
         return new User(e.getId(), e.getName(), e.getEmail());
     }
+
+
 }
