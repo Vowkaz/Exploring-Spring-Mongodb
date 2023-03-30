@@ -5,13 +5,13 @@ import com.example.testemongo.dto.UserDTO;
 import com.example.testemongo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.io.Serializable;
+import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -27,6 +27,22 @@ public class UserResource
         List<User> e = userService.findAll();
         List<UserDTO> l = e.stream().map(i-> new UserDTO(i)).collect(Collectors.toList());
         return ResponseEntity.ok().body(l);
+    }
+
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<Optional<User>> findById(@PathVariable String id)
+    {
+        Optional<User> e = userService.findById(id);
+        return ResponseEntity.ok().body(e);
+    }
+
+    @PostMapping
+    public ResponseEntity<Void> insert(@RequestBody UserDTO e)
+    {
+        User o = userService.fromDTO(e);
+        o = userService.insert(o);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(o.getId()).toUri();
+        return ResponseEntity.created(uri).build();
     }
 
 }
