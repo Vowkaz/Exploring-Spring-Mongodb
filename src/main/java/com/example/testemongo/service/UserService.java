@@ -33,6 +33,19 @@ public class UserService {
         return userRepository.insert(e);
     }
 
+    public User update(String id, User i)
+    {
+        User e = userRepository.findUserById(id);
+        updateData(e,i);
+        return userRepository.save(e);
+    }
+
+    public void updateData(User o, User e)
+    {
+        o.setName(e.getName());
+        o.setEmail(e.getEmail());
+    }
+
     public void delete(String id)
     {
         findById(id);
